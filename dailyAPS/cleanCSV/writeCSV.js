@@ -15,9 +15,9 @@ function rowsToCsv(rows) {
   ].join('\n');
 }
 
-function writeCsv(filePath, rows) {
+function writeCSV(filePath, rows) {
   const csv = rowsToCsv(rows);
   fs.writeFileSync(filePath, csv, 'utf8');
 }
 
-module.exports = { writeCsv };
+module.exports = { writeCSV };
