@@ -4,8 +4,6 @@ function isAPSTenet(row) {
     .toLowerCase() === 'y';
 }
 
-function getAPSTenets(rows) {
+function pickAPSTenets(rows) {
   return rows.filter(isAPSTenet);
 }
-
-module.exports = { getAPSTenets };
