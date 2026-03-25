@@ -1,23 +1,29 @@
-const fs = require('fs');
-
-function rowsToCsv(rows) {
-  if (!rows.length) return '';
+function rowsToCSV(rows) {
+  if (!rows.length) {
+    return '';
+  }
 
   const headers = Object.keys(rows[0]);
+  const lines = [headers.join(',')];
 
-  return [
-    headers.join(','),
-    ...rows.map(row =>
-      headers
-        .map(h => `"${String(row[h] ?? '').replace(/"/g, '""')}"`)
-        .join(',')
-    )
-  ].join('\n');
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+
+    const values = headers.map((header) => {
+      const value = row[header] ?? '';
+      const escaped = String(value).replace(/"/g, '""');
+      return `"${escaped}"`;
+    });
+
+    lines.push(values.join(','));
+  }
+
+  return lines.join('\n');
 }
 
-function writeCSV(filePath, rows) {
-  const csv = rowsToCsv(rows);
-  fs.writeFileSync(filePath, csv, 'utf8');
-}
+function writeCSV(folderId, fileName, rows) {
+  const csvContent = rowsToCSV(rows);
+  const folder = DriveApp.getFolderById(folderId);
 
-module.exports = { writeCSV };
+  return folder.createFile(fileName, csvContent, MimeType.CSV);
+}
