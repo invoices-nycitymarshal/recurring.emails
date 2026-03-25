@@ -30,5 +30,3 @@ function getEmailsFromContactGroup(groupLabel) {
 
   return emails;
 }
-
-module.exports = {getEmailsFromContactGroup};

@@ -11,8 +11,3 @@ function normalizeRow(row) {
 
   return normalized;
 }
-
-module.exports = {
-  normalizeKey,
-  normalizeRow
-};

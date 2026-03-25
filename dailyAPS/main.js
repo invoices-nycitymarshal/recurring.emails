@@ -1,24 +1,32 @@
-const { createAPSList } = require('./cleanCSV/createAPSList');
-const { draftEmail } = require('./draftAPSEmail/draftEmail');
+const PROJECT_FOLDER_ID = '1DHgVWbB018csdMXXGTRgB7hAbiNF2nB6';
+const INPUT_FILE_NAME = '28_V1.CSV';
 
-async function main() {
-  try {
-    const inputPath = './28_V1.CSV';
-    const outputPath = './aps_tenets.csv';
+function main() {
+  const projectFolder = DriveApp.getFolderById(PROJECT_FOLDER_ID);
+  const inputFile = getFileByName(projectFolder, INPUT_FILE_NAME);
 
-    await createAPSList(inputPath, outputPath);
+  const outputFile = createAPSList(
+    inputFile.getId(),
+    PROJECT_FOLDER_ID
+  );
 
-    const email = await draftEmail(outputPath);
+  const email = draftEmail(outputFile.getId());
 
-    GmailApp.createDraft(
-      email.to.join(','),
-      email.subject,
-      email.body
-    );
+  GmailApp.createDraft(
+    email.to.join(','),
+    email.subject,
+    email.body
+  );
 
-    Logger.log('Draft created successfully.');
-  } catch (error) {
-    Logger.log(error.message);
-    throw error;
+  Logger.log(`Draft created successfully: ${email.subject}`);
+}
+
+function getFileByName(folder, fileName) {
+  const files = folder.getFilesByName(fileName);
+
+  if (!files.hasNext()) {
+    throw new Error(`File not found: ${fileName}`);
   }
+
+  return files.next();
 }

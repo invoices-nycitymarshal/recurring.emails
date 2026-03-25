@@ -1,10 +1,7 @@
-const { readTenetCSV } = require('./getTenetInfo'); // ✅
-const { createEmailInstance, writeMsgSubject, writeRecipient, writeEmailBody } = require('./writeMsg');
-
-async function draftEmail(filePath) {
+function draftEmail(fileId) {
   const tenets = [];
 
-  await readTenetCSV(filePath, (row) => {
+  readTenetCSV(fileId, (row) => {
     tenets.push(row);
   });
 
@@ -12,12 +9,10 @@ async function draftEmail(filePath) {
   const subject = writeMsgSubject();
   const body = writeEmailBody(tenets);
 
-  return createEmailInstance({
+function createEmailInstance({ to, subject, body, tenets }) {
+  return {
     to,
     subject,
     body,
     tenets
-  });
-}
-
-module.exports = { draftEmail };
+  };

@@ -27,9 +27,3 @@ function formatDate(date) {
     year: 'numeric'
   });
 }
-
-module.exports = {
-  getNextDate,
-  getNextWeekday,
-  formatDate
-};
