@@ -2,7 +2,7 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const { normalizeRow } = require('./normalizeText');
 
-function readTenetCsv(filePath, onRow) {
+function readTenetCSV(filePath, onRow) {
   return new Promise((resolve, reject) => {
     fs.createReadStream(filePath)
       .pipe(csv())
@@ -12,4 +12,4 @@ function readTenetCsv(filePath, onRow) {
   });
 }
 
-module.exports = { readTenetCsv };
+module.exports = { readTenetCSV };
