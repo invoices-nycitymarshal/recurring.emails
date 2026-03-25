@@ -9,6 +9,14 @@ function draftEmail(fileId) {
   const subject = writeMsgSubject();
   const body = writeEmailBody(tenets);
 
+  return createEmailInstance({
+    to,
+    subject,
+    body,
+    tenets
+  });
+}
+
 function createEmailInstance({ to, subject, body, tenets }) {
   return {
     to,
@@ -16,3 +24,4 @@ function createEmailInstance({ to, subject, body, tenets }) {
     body,
     tenets
   };
+}
