@@ -48,14 +48,14 @@ function transformRow(row) {
   return pickRelevantColumns(normalizedRow);
 }
 
-function extractRelevantColumns(filePath) {
-  return new Promise((resolve, reject) => {
-    const results = [];
+async function extractRelevantColumns(filePath) {
+  const results = [];
 
-    fs.createReadStream(filePath)
-      .pipe(csv())
-      .on('data', (row) => results.push(transformRow(row)))
-      .on('end', () => resolve(results))
-      .on('error', reject);
+  await readCsv(filePath, (row) => {
+    results.push(transformRow(row));
   });
+
+  return results;
 }
+
+module.exports = { extractRelevantColumns };
