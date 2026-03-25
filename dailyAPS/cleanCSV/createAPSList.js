@@ -1,6 +1,6 @@
-const { extractRelevantColumns } = require('./cleanCSV/pickColumns');
-const { getAPSTenets } = require('./cleanCSV/pickAPSTenets');
-const { writeCSV } = require('./cleanCSV/writeCSV');
+const { extractRelevantColumns } = require('./pickColumns');
+const { getAPSTenets } = require('./pickAPSTenets');
+const { writeCSV } = require('./writeCSV');
 
 async function main() {
   const inputPath = './28_V1.CSV';
@@ -9,7 +9,7 @@ async function main() {
   const rows = await extractRelevantColumns(inputPath);
   const apsTenets = getAPSTenets(rows);
 
-  writeCsv(outputPath, apsTenets);
+  writeCSV(outputPath, apsTenets);
 
   console.log(`Saved to ${outputPath}`);
 }
