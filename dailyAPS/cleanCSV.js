@@ -15,6 +15,14 @@ const relevantColumns = [
 ];
 
 function normalizeRow(row) {
+    
+    const normalized = {};
+
+    for (const key in row) {
+        normalized[key.trim().toLowerCase()] = row[key];
+    }
+
+    return normalized;
 
 }
     
@@ -23,5 +31,6 @@ function pickColumns(filePath) {
 }
 
 function extractRelevantColumns(filePath) {
-    
+
 }
+
