@@ -1,12 +1,9 @@
-const { extractRelevantColumns } = require('./pickColumns');
-const { getAPSTenets } = require('./pickAPSTenets');
-const { writeCSV } = require('./writeCSV');
+function createAPSList(inputFileId, outputFolderId) {
+  const outputFileName = 'aps_tenets.csv';
 
-async function createAPSList(inputPath, outputPath) {
-  const rows = await extractRelevantColumns(inputPath);
-  const apsTenets = getAPSTenets(rows);
+  const rows = extractRelevantColumns(inputFileId);
+  const apsTenets = pickAPSTenets(rows);
+  const outputFile = writeCSV(outputFolderId, outputFileName, apsTenets);
 
-  writeCSV(outputPath, apsTenets);
+  return outputFile;
 }
-
-module.exports = { createAPSList };
