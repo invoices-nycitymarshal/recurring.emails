@@ -1,9 +1,24 @@
 const { createAPSList } = require('./cleanCSV/createAPSList');
+const { draftEmail } = require('./draftAPSEmail/draftEmail');
 
 async function main() {
-  await createAPSList('./28_V1.CSV', './aps_tenets.csv');
-  const emailBody = await draftEmail(outputPath);
-  console.log(emailBody);
-}
+  try {
+    const inputPath = './28_V1.CSV';
+    const outputPath = './aps_tenets.csv';
 
-main().catch(console.error);
+    await createAPSList(inputPath, outputPath);
+
+    const email = await draftEmail(outputPath);
+
+    GmailApp.createDraft(
+      email.to.join(','),
+      email.subject,
+      email.body
+    );
+
+    Logger.log('Draft created successfully.');
+  } catch (error) {
+    Logger.log(error.message);
+    throw error;
+  }
+}

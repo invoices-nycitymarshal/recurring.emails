@@ -1,6 +1,6 @@
 const fs = require('fs');
 const csv = require('csv-parser');
-const { normalizeRow } = require('./normalizeText');
+const { normalizeRow } = require('./helperFunctions/normalizeText');
 
 function readTenetCSV(filePath, onRow) {
   return new Promise((resolve, reject) => {
