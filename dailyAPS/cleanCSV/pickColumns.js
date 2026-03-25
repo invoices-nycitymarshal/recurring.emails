@@ -5,7 +5,7 @@ const relevantColumns = [
   'court_index',
   'executed_by',
   'tenet_name',
-  'eviction address',
+  'eviction_address',
   'eviction_apt_num',
   'eviction_city',
   'eviction_state',
