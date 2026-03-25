@@ -14,23 +14,48 @@ const relevantColumns = [
   'aps_involvement_flag'
 ];
 
-function normalizeRow(row) {
-    
-    const normalized = {};
+function mapObject(obj, transformFn) {
+  const result = {};
 
-    for (const key in row) {
-        normalized[key.trim().toLowerCase()] = row[key];
-    }
+  for (const key in obj) {
+    const [newKey, newValue] = transformFn(key, obj[key]);
+    result[newKey] = newValue;
+  }
 
-    return normalized;
-
+  return result;
 }
-    
-function pickColumns(filePath) {
 
+function pickKeys(obj, keys) {
+  const result = {};
+
+  for (const key of keys) {
+    result[key] = obj[key] ?? null;
+  }
+
+  return result;
+}
+
+function normalizeRow(row) {
+  return mapObject(row, (key, value) => [key.trim().toLowerCase(), value]);
+}
+
+function pickRelevantColumns(row) {
+  return pickKeys(row, relevantColumns);
+}
+
+function transformRow(row) {
+  const normalizedRow = normalizeRow(row);
+  return pickRelevantColumns(normalizedRow);
 }
 
 function extractRelevantColumns(filePath) {
+  return new Promise((resolve, reject) => {
+    const results = [];
 
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on('data', (row) => results.push(transformRow(row)))
+      .on('end', () => resolve(results))
+      .on('error', reject);
+  });
 }
-
