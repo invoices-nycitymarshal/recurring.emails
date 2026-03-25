@@ -1,8 +1,6 @@
-const { getNextDate, getNextWeekday, formatDate } = require('./helperFunctions/getNextDate');
-const { getEmailsFromContactGroup } = require('./helperFunctions/parseGoogleContacts');
-
-function createEmailInstance({ tenets, subject, body }) {
+function createEmailInstance({ to, subject, body, tenets }) {
   return {
+    to,
     subject,
     body,
     tenets
@@ -13,9 +11,7 @@ function writeMsgSubject() {
   const nextDate = formatDate(getNextDate());
   const nextDay = getNextWeekday();
 
-  const emailSubject = `APS Evictions for ${nextDay}, ${nextDate}`;
-
-  return emailSubject;
+  return `APS Evictions for ${nextDay}, ${nextDate}`;
 }
 
 function writeRecipient() {
@@ -29,8 +25,7 @@ function writeEmailBody(tenets) {
     '',
     writeTenetList(tenets),
     '',
-    writeEmailSignature(),
-    '',
+    writeEmailSignature()
   ].join('\n');
 }
 
@@ -41,7 +36,7 @@ function writeTenetList(tenets) {
       `Court Index: ${tenet.court_index ?? ''}`,
       `Control No: ${tenet.psa_ctrl_no ?? ''}`,
       `Executed By: ${tenet.executed_by ?? ''}`,
-      `Address: ${formatAddress(tenet)}`,
+      `Address: ${formatAddress(tenet)}`
     ].join('\n'))
     .join('\n\n');
 }
@@ -55,7 +50,7 @@ function writeEmailSignature() {
 }
 
 function formatAddress(tenet) {
-  const address = tenet['eviction address'] ?? '';
+  const address = tenet.eviction_address ?? '';
   const apt = tenet.eviction_apt_num ? `Apt ${tenet.eviction_apt_num}` : '';
   const city = tenet.eviction_city ?? '';
   const state = tenet.eviction_state ?? '';
@@ -65,13 +60,3 @@ function formatAddress(tenet) {
     .filter(Boolean)
     .join(', ');
 }
-
-module.exports = {
-  createEmailInstance,
-  writeMsgSubject,
-  writeRecipient,
-  writeEmailBody,
-  writeTenetList,
-  writeEmailSignature,
-  formatAddress
-};
