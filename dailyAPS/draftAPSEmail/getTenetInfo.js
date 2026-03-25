@@ -1,15 +1,27 @@
-const fs = require('fs');
-const csv = require('csv-parser');
-const { normalizeRow } = require('./helperFunctions/normalizeText');
+function readTenetCSV(fileId, onRow) {
+  const file = DriveApp.getFileById(fileId);
+  const csvText = file.getBlob().getDataAsString();
+  const rows = Utilities.parseCsv(csvText);
 
-function readTenetCSV(filePath, onRow) {
-  return new Promise((resolve, reject) => {
-    fs.createReadStream(filePath)
-      .pipe(csv())
-      .on('data', (row) => onRow(normalizeRow(row)))
-      .on('end', resolve)
-      .on('error', reject);
-  });
+  if (!rows.length) {
+    return;
+  }
+
+  const headers = rows[0];
+
+  for (let i = 1; i < rows.length; i++) {
+    const rawRow = createRowObject(headers, rows[i]);
+    const normalizedRow = normalizeRow(rawRow);
+    onRow(normalizedRow);
+  }
 }
 
-module.exports = { readTenetCSV };
+function createRowObject(headers, values) {
+  const row = {};
+
+  for (let i = 0; i < headers.length; i++) {
+    row[headers[i]] = values[i] ?? '';
+  }
+
+  return row;
+}
