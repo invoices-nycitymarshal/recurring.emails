@@ -1,7 +1,4 @@
-const fs = require('fs');
-const csv = require('csv-parser');
-
-const relevantColumns = [
+const RELEVANT_COLUMNS = [
   'court_index',
   'executed_by',
   'tenet_name',
@@ -28,34 +25,52 @@ function mapObject(obj, transformFn) {
 function pickKeys(obj, keys) {
   const result = {};
 
-  for (const key of keys) {
-    result[key] = obj[key] ?? null;
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    result[key] = obj[key] ?? '';
   }
 
   return result;
 }
 
 function normalizeRow(row) {
-  return mapObject(row, (key, value) => [key.trim().toLowerCase(), value]);
+  return mapObject(row, (key, value) => [normalizeKey(key), value]);
 }
 
 function pickRelevantColumns(row) {
-  return pickKeys(row, relevantColumns);
+  return pickKeys(row, RELEVANT_COLUMNS);
 }
 
 function transformRow(row) {
-  const normalizedRow = normalizeRow(row);
-  return pickRelevantColumns(normalizedRow);
+  return pickRelevantColumns(normalizeRow(row));
 }
 
-async function extractRelevantColumns(filePath) {
+function createRowObject(headers, values) {
+  const row = {};
+
+  for (let i = 0; i < headers.length; i++) {
+    row[headers[i]] = values[i] ?? '';
+  }
+
+  return row;
+}
+
+function extractRelevantColumns(fileId) {
+  const file = DriveApp.getFileById(fileId);
+  const csvText = file.getBlob().getDataAsString();
+  const rows = Utilities.parseCsv(csvText);
   const results = [];
 
-  await readCsv(filePath, (row) => {
-    results.push(transformRow(row));
-  });
+  if (!rows.length) {
+    return results;
+  }
+
+  const headers = rows[0];
+
+  for (let i = 1; i < rows.length; i++) {
+    const rawRow = createRowObject(headers, rows[i]);
+    results.push(transformRow(rawRow));
+  }
 
   return results;
 }
-
-module.exports = { extractRelevantColumns };
