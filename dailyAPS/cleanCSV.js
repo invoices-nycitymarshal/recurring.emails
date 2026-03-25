@@ -13,7 +13,15 @@ const relevantColumns = [
   'psa_ctrl_no',
   'aps_involvement_flag'
 ];
-    
-function extractColumns(filePath) {
 
+function normalizeRow(row) {
+
+}
+    
+function pickColumns(filePath) {
+
+}
+
+function extractRelevantColumns(filePath) {
+    
 }
